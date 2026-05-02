@@ -1,12 +1,12 @@
 <template>
-  <Navbar msg = "Welcome to Your Vue.js App"/>
-  
-  <AppFooter/>
+    <Navbar/>
+    <router-view/>
+    <AppFooter/>
 </template>
 
 <script>
-import Navbar from './components/navbar.vue'
-import AppFooter from './components/footer.vue'
+import Navbar from './components/NavbarComp.vue'
+import AppFooter from './components/FooterComp.vue'
 
 export default {
   name: 'App',

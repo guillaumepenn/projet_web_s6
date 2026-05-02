@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "client": "cd client && npm run serve", 
-    "server": "cd server && node app.js", 
+    "client": "cd client && npm run serve",
+    "server": "cd server && node app.js",
     "dev": "concurrently --kill-others \"npm run server\" \"npm run client\""
   },
   "keywords": [],
@@ -14,5 +14,9 @@
   "type": "commonjs",
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "vue-router": "^4.6.4"
   }
 }

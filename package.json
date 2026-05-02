@@ -1,12 +1,11 @@
 {
-  "name": "projet",
+  "name": "projet_web_app",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "client": "cd client && npm run serve",
-    "server": "cd server && node app.js",
+    "client": "cd client && npm run serve", 
+    "server": "cd server && node app.js", 
     "dev": "concurrently --kill-others \"npm run server\" \"npm run client\""
   },
   "keywords": [],
@@ -15,8 +14,5 @@
   "type": "commonjs",
   "devDependencies": {
     "concurrently": "^9.2.1"
-  },
-  "dependencies": {
-    "express": "^5.2.1"
   }
 }

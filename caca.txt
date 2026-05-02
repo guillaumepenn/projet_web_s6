@@ -1,0 +1,10 @@
+client/
+├ src/
+│  ├ assets/        ← images, css
+│  ├ components/    ← petits blocs réutilisables
+│  ├ views/         ← pages (équivalent Pug)
+│  ├ router/        ← routes (URL → pages)
+│  ├ App.vue        ← composant principal
+│  └ main.js        ← point d’entrée
+├ public/
+├ package.json

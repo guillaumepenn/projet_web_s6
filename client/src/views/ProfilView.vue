@@ -1,28 +1,28 @@
 <template>
   <div class="profile-page">
-    <!-- Profile Header -->
+    <!-- Profile Header: Basic user identity -->
     <section class="profile-header">
       <div class="container">
         <div class="profile-header-content">
           <div class="profile-avatar-large-wrapper">
-            <img :src="userAvatar" alt="Photo de profil" class="profile-avatar-large">
+            <img :src="userAvatar" alt="Profile Picture" class="profile-avatar-large">
           </div>
           <div class="profile-info">
-            <h1>{{ userData.name || 'Utilisateur' }}</h1>
+            <h1>{{ userData.name || 'User' }}</h1>
             <p class="profile-email">{{ userData.email || 'email@example.com' }}</p>
             <p class="profile-member-since">
-              Membre depuis <span>{{ formattedJoinDate }}</span>
+              Member since <span>{{ formattedJoinDate }}</span>
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Stats Overview -->
+    <!-- Stats Overview: High-level progress metrics -->
     <section class="profile-stats-section">
       <div class="container">
         <div class="profile-stats-grid">
-          <!-- Leçons terminées -->
+          <!-- Lessons Completed Card -->
           <div class="profile-stat-card">
             <div class="profile-stat-icon lessons-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -31,7 +31,7 @@
             </div>
             <div class="profile-stat-content">
               <span class="profile-stat-number">{{ stats.lessonsCompletedCount }}</span>
-              <span class="profile-stat-label">Leçons terminées</span>
+              <span class="profile-stat-label">Lessons Completed</span>
             </div>
             <div class="profile-stat-progress">
               <div class="profile-stat-progress-bar">
@@ -41,7 +41,7 @@
             </div>
           </div>
 
-          <!-- Quizz effectués -->
+          <!-- Quizzes Done Card -->
           <div class="profile-stat-card">
             <div class="profile-stat-icon quizzes-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -50,7 +50,7 @@
             </div>
             <div class="profile-stat-content">
               <span class="profile-stat-number">{{ stats.quizzesCompletedCount }}</span>
-              <span class="profile-stat-label">Quizz effectués</span>
+              <span class="profile-stat-label">Quizzes Taken</span>
             </div>
             <div class="profile-stat-progress">
               <div class="profile-stat-progress-bar">
@@ -60,7 +60,7 @@
             </div>
           </div>
 
-          <!-- Score moyen -->
+          <!-- Average Score Card -->
           <div class="profile-stat-card">
             <div class="profile-stat-icon average-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -69,16 +69,16 @@
             </div>
             <div class="profile-stat-content">
               <span class="profile-stat-number">{{ stats.quizzesCompletedCount > 0 ? stats.averageScore + '%' : '-' }}</span>
-              <span class="profile-stat-label">Score moyen</span>
+              <span class="profile-stat-label">Average Score</span>
             </div>
             <div class="profile-stat-detail">
               <span class="profile-stat-detail-text">
-                {{ stats.quizzesCompletedCount > 0 ? `Sur ${stats.quizzesCompletedCount} quizz effectué(s)` : 'Aucun quizz effectué' }}
+                {{ stats.quizzesCompletedCount > 0 ? `Across ${stats.quizzesCompletedCount} quiz(zes)` : 'No quizzes taken yet' }}
               </span>
             </div>
           </div>
 
-          <!-- Meilleur score -->
+          <!-- Best Score Card -->
           <div class="profile-stat-card">
             <div class="profile-stat-icon best-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +87,7 @@
             </div>
             <div class="profile-stat-content">
               <span class="profile-stat-number">{{ stats.bestScore > 0 ? stats.bestScore + '%' : '-' }}</span>
-              <span class="profile-stat-label">Meilleur score</span>
+              <span class="profile-stat-label">Best Performance</span>
             </div>
             <div class="profile-stat-detail">
               <span class="profile-stat-detail-text">{{ stats.bestQuizTitle }}</span>
@@ -97,20 +97,20 @@
       </div>
     </section>
 
-    <!-- Content Sections -->
+    <!-- Content Sections: Detail of lessons and quizzes -->
     <section class="profile-content-section">
       <div class="container">
         <div class="profile-content-grid">
-          <!-- Lessons Progress -->
+          <!-- Detailed Lessons List -->
           <div class="profile-content-card">
             <div class="profile-card-header">
               <h2>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
                 </svg>
-                Progression des leçons
+                Lessons Progress
               </h2>
-              <a href="#" @click.prevent="$emit('navigate', 'lessons')" class="profile-card-link">Voir tout</a>
+              <a href="#" @click.prevent="$emit('navigate', 'lessons')" class="profile-card-link">View All</a>
             </div>
             <div class="profile-card-body">
               <div class="profile-lessons-list">
@@ -132,23 +132,23 @@
                     <span :class="['profile-lesson-domain domain-badge', lesson.domain]">{{ lesson.domain }}</span>
                   </div>
                   <div class="profile-lesson-progress-text">
-                    {{ getLessonStatus(lesson.id).completed ? 'Terminée' : `${getLessonStatus(lesson.id).count}/5 sections` }}
+                    {{ getLessonStatus(lesson.id).completed ? 'Completed' : `${getLessonStatus(lesson.id).count}/5 sections` }}
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Quizzes Results -->
+          <!-- Detailed Quiz Results List -->
           <div class="profile-content-card">
             <div class="profile-card-header">
               <h2>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
                 </svg>
-                Résultats des quizz
+                Quiz Results
               </h2>
-              <a href="#" @click.prevent="$emit('navigate', 'quizzes')" class="profile-card-link">Voir tout</a>
+              <a href="#" @click.prevent="$emit('navigate', 'quizzes')" class="profile-card-link">View All</a>
             </div>
             <div class="profile-card-body">
               <div class="profile-quizzes-list">
@@ -163,7 +163,7 @@
                       <span class="score-value">{{ getQuizStatus(quiz.id).percentage }}%</span>
                       <span class="score-detail">{{ getQuizStatus(quiz.id).score }}/{{ quiz.questions.length }}</span>
                     </template>
-                    <span v-else class="not-completed">Non effectué</span>
+                    <span v-else class="not-completed">Not attempted</span>
                   </div>
                 </div>
               </div>
@@ -173,7 +173,7 @@
       </div>
     </section>
 
-    <!-- Domain Performance -->
+    <!-- Domain Performance: Comparison across scientific fields -->
     <section class="profile-domains-section">
       <div class="container">
         <div class="profile-content-card full-width">
@@ -182,7 +182,7 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
               </svg>
-              Performance par domaine
+              Performance by Domain
             </h2>
           </div>
           <div class="profile-card-body">
@@ -192,15 +192,15 @@
                 <h3 class="profile-domain-name">{{ capitalize(domain) }}</h3>
                 <div class="profile-domain-stats">
                   <div class="profile-domain-stat">
-                    <span class="label">Leçons</span>
+                    <span class="label">Lessons</span>
                     <span class="value">{{ data.lessonsCompleted }}/{{ data.lessonsTotal }}</span>
                   </div>
                   <div class="profile-domain-stat">
-                    <span class="label">Quizz</span>
+                    <span class="label">Quizzes</span>
                     <span class="value">{{ data.quizzesCompleted }}/{{ data.quizzesTotal }}</span>
                   </div>
                   <div class="profile-domain-stat">
-                    <span class="label">Score moyen</span>
+                    <span class="label">Avg Score</span>
                     <span :class="['value', getScoreClass(data.avgScore)]">
                       {{ data.quizzesCompleted > 0 ? data.avgScore + '%' : '-' }}
                     </span>
@@ -219,9 +219,9 @@
 import { computed } from 'vue';
 import { lessonsData, quizzesData } from '../assets/data.js';
 
-// --- LOGIQUE UTILISATEUR ---
-// On simule l'utilisateur qui serait dans le localStorage ou un store
-const userData = JSON.parse(localStorage.getItem('user') || '{"name": "Utilisateur", "email": "email@example.com", "joinDate": null}');
+// --- USER DATA LOGIC ---
+// Retrieves basic user info. Replace localStorage with a DB call in production.
+const userData = JSON.parse(localStorage.getItem('user') || '{"name": "Guest Student", "email": "student@example.com", "joinDate": null}');
 
 const userAvatar = computed(() => {
   return userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name || 'User')}&background=1e5a7e&color=fff&size=120`;
@@ -229,23 +229,26 @@ const userAvatar = computed(() => {
 
 const formattedJoinDate = computed(() => {
   const date = userData.joinDate ? new Date(userData.joinDate) : new Date();
-  return date.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+  return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
 });
 
-// --- LOGIQUE PROGRESSION ---
+// --- PROGRESS LOGIC ---
+// Retrieves progress objects. In production, these come from MySQL.
 const lessonsProgress = JSON.parse(localStorage.getItem('lessonsProgress') || '{}');
 const quizzesProgress = JSON.parse(localStorage.getItem('quizzesProgress') || '{}');
 
-// Calcul des statistiques globales
+/**
+ * Calculates global statistics by aggregating all stored progress
+ */
 const stats = computed(() => {
-  // Leçons
+  // Lessons Completion
   const lpValues = Object.values(lessonsProgress);
   const lessonsCompletedCount = lpValues.filter(l => l.completed).length;
   const lessonsPercent = lessonsData.length > 0 ? Math.round((lessonsCompletedCount / lessonsData.length) * 100) : 0;
 
-  // Quizz
+  // Quizzes Metrics
   const qpEntries = Object.entries(quizzesProgress);
-  const quizzesCompletedCount = qpEntries.filter(([q]) => q.completed).length;
+  const quizzesCompletedCount = qpEntries.filter(([/*id*/, q]) => q.completed).length;                                /* ID qui sera peu etre à utiliser avec la BDD*/
   const quizzesPercent = quizzesData.length > 0 ? Math.round((quizzesCompletedCount / quizzesData.length) * 100) : 0;
 
   let totalScore = 0;
@@ -276,7 +279,7 @@ const stats = computed(() => {
   };
 });
 
-// --- HELPERS POUR LES LISTES ---
+// --- LIST HELPERS ---
 const getLessonStatus = (id) => {
   const p = lessonsProgress[id] || { completed: false, sectionsCompleted: [] };
   const count = p.sectionsCompleted?.length || 0;
@@ -294,7 +297,10 @@ const getScoreClass = (pct) => {
   return 'low';
 };
 
-// --- STATISTIQUES PAR DOMAINE ---
+// --- DOMAIN-SPECIFIC LOGIC ---
+/**
+ * Groups stats by science domain for the performance cards
+ */
 const domainStats = computed(() => {
   const domains = ['astronomy', 'biology', 'chemistry', 'physics', 'geology'];
   const results = {};
@@ -337,7 +343,6 @@ const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 </script>
 
 <style scoped>
-/* Tu peux coller ici tes styles CSS s'ils ne sont pas déjà en global */
 .profile-lesson-item.completed { border-left: 4px solid #2ecc71; }
 .score-value.high { color: #2ecc71; font-weight: bold; }
 .score-value.medium { color: #f1c40f; }

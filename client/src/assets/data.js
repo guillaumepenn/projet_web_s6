@@ -8,8 +8,10 @@ export const lessonsData = [
         id: 1, title: "The Solar System", domain: "astronomy", duration: "15 min",
         description: "Discover the planets and objects of the solar system.",
         sections: [
-            { id: "s1", title: "Introduction", text: "The solar system consists of our star, the Sun, and all the celestial bodies orbiting it." },
-            { id: "s2", title: "The planets", text: "There are 8 main planets, divided into terrestrial and gas giants." }
+            { id: "s1", title: "Introduction", text: "The solar system consists of our star, the Sun, and all the celestial bodies orbiting it: eight planets, their moons, and millions of asteroids and comets." },
+            { id: "s2", title: "The Terrestrial Planets", text: "Mercury, Venus, Earth, and Mars are the inner planets. They are composed primarily of rock and metal." },
+            { id: "s3", title: "The Gas Giants", text: "Jupiter and Saturn are massive planets composed mostly of hydrogen and helium." },
+            { id: "s4", title: "The Ice Giants", text: "Uranus and Neptune contain more 'ices' like water, ammonia, and methane." }
         ]
     },
     {
@@ -83,14 +85,24 @@ export const quizzesData = [
         id: 1, title: "Quiz: The Solar System", domain: "astronomy", relatedLesson: 1,
         questions: [
             {
-                id: "q1", question: "What is the largest planet?",
-                answers: [ { id: "a", text: "Earth" }, { id: "b", text: "Jupiter" }, { id: "c", text: "Mars" } ],
+                id: "q1", question: "What is the largest planet in our solar system?",
+                answers: [ { id: "a", text: "Earth" }, { id: "b", text: "Jupiter" }, { id: "c", text: "Saturn" } ],
                 correctAnswer: "b"
             },
             {
-                id: "q2", question: "The Sun is a star.",
-                answers: [ { id: "a", text: "True" }, { id: "b", text: "False" } ],
+                id: "q2", question: "Is the Sun a planet?",
+                answers: [ { id: "a", text: "Yes" }, { id: "b", text: "No, it's a star" } ],
+                correctAnswer: "b"
+            },
+            {
+                id: "q3", question: "Which planet is known as the Red Planet?",
+                answers: [ { id: "a", text: "Mars" }, { id: "b", text: "Venus" }, { id: "c", text: "Jupiter" } ],
                 correctAnswer: "a"
+            },
+            {
+                id: "q4", question: "How many main planets are there?",
+                answers: [ { id: "a", text: "7" }, { id: "b", text: "8" }, { id: "c", text: "9" } ],
+                correctAnswer: "b"
             }
         ]
     },

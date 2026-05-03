@@ -1,12 +1,14 @@
 <template>
-  <div class="quiz-page" v-if="currentQuiz">
-    <!-- Header Dynamique -->
+  <!-- Le v-if ici protège tout le bloc -->
+  <div class="quiz-page" v-if="currentQuiz && currentQuestion">
+    <!-- Ton contenu HTML reste identique -->
     <section class="quiz-header">
       <div class="container">
-        <router-link :to="{ name: 'Quizzes' }" class="back-link">
+        <!-- Remplacement du router-link si tu n'as pas de router -->
+        <a href="/" class="back-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-          Retour aux quizz
-        </router-link>
+          Retour à l'accueil
+        </a>
         <div class="quiz-title-block">
           <span class="quiz-domain-badge">{{ currentQuiz.domain }}</span>
           <h1>Quizz : {{ currentQuiz.title }}</h1>
@@ -15,7 +17,6 @@
       </div>
     </section>
 
-    <!-- Barre de Progression -->
     <section class="quiz-progress-section" v-if="!quizFinished">
       <div class="container">
         <div class="quiz-progress-wrapper">
@@ -29,15 +30,11 @@
       </div>
     </section>
 
-    <!-- Contenu du Quiz -->
     <section class="quiz-content">
       <div class="container">
-        
-        <!-- Écran des Questions -->
         <div v-if="!quizFinished" class="quiz-container">
           <div class="quiz-question-card">
             <h2 class="question-text">{{ currentQuestion.question }}</h2>
-            
             <div class="answers-grid">
               <button 
                 v-for="answer in currentQuestion.answers" 
@@ -49,11 +46,8 @@
                 <span class="answer-text">{{ answer.text }}</span>
               </button>
             </div>
-
             <div class="question-actions">
-              <button class="btn btn-secondary" @click="prevQuestion" :disabled="currentIndex === 0">
-                Précédent
-              </button>
+              <button class="btn btn-secondary" @click="prevQuestion" :disabled="currentIndex === 0">Précédent</button>
               <button class="btn btn-primary" @click="nextQuestion">
                 {{ currentIndex === totalQuestions - 1 ? 'Terminer' : 'Suivant' }}
               </button>
@@ -61,7 +55,6 @@
           </div>
         </div>
 
-        <!-- Écran des Résultats (Conditionnel) -->
         <div v-else class="quiz-results">
           <div class="results-card">
             <div class="results-icon" :class="{ 'low-score': scorePercent < 50 }">
@@ -69,45 +62,55 @@
             </div>
             <h2 class="results-title">{{ resultMessage.title }}</h2>
             <p class="results-subtitle">{{ resultMessage.subtitle }}</p>
-            
             <div class="score-display">
               <span class="score-value">{{ finalScore }}</span>
               <span class="score-separator">/</span>
               <span class="score-total">{{ totalQuestions }}</span>
             </div>
-            
             <div class="results-actions">
               <button class="btn btn-secondary" @click="resetQuiz">Recommencer</button>
-              <router-link :to="`/lesson/${currentQuiz.id}`" class="btn btn-primary">Revoir la leçon</router-link>
             </div>
           </div>
         </div>
-
       </div>
     </section>
+  </div>
+  <!-- Affichage d'erreur si le quiz n'existe pas -->
+  <div v-else class="container" style="padding: 50px; text-align: center;">
+      <h2>Chargement du quiz...</h2>
+      <p>Si rien ne s'affiche, vérifiez l'ID du quiz.</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
-// On imagine que tu as mis tes questions dans data.js
+import { ref, computed, defineProps } from 'vue';
 import { quizzesData } from '../assets/data.js'; 
 
-const route = useRoute();
+const props = defineProps({
+  quizId: {
+    type: Number,
+    default: 1
+  }
+});
+
 const currentIndex = ref(0);
 const userAnswers = ref([]);
 const quizFinished = ref(false);
 
-// 1. Récupérer le quiz selon l'ID
+// 1. Récupérer le quiz
 const currentQuiz = computed(() => {
-  const id = parseInt(route.params.id);
-  return quizzesData.find(q => q.id === id);
+  return quizzesData.find(q => q.id === props.quizId);
 });
 
-// 2. Question actuelle
-const currentQuestion = computed(() => currentQuiz.value.questions[currentIndex.value]);
-const totalQuestions = computed(() => currentQuiz.value.questions.length);
+// 2. Question actuelle - AJOUT DE SECURITÉ ICI
+const currentQuestion = computed(() => {
+  if (!currentQuiz.value || !currentQuiz.value.questions) return null;
+  return currentQuiz.value.questions[currentIndex.value];
+});
+
+const totalQuestions = computed(() => {
+  return currentQuiz.value ? currentQuiz.value.questions.length : 0;
+});
 
 // 3. Navigation
 const selectAnswer = (id) => {
@@ -133,6 +136,7 @@ const prevQuestion = () => {
 
 // 4. Calcul du score
 const finalScore = computed(() => {
+  if (!currentQuiz.value) return 0;
   let score = 0;
   currentQuiz.value.questions.forEach((q, index) => {
     if (userAnswers.value[index] === q.correctAnswer) score++;
@@ -140,7 +144,10 @@ const finalScore = computed(() => {
   return score;
 });
 
-const scorePercent = computed(() => Math.round((finalScore.value / totalQuestions.value) * 100));
+const scorePercent = computed(() => {
+    if (totalQuestions.value === 0) return 0;
+    return Math.round((finalScore.value / totalQuestions.value) * 100);
+});
 
 // 5. Messages de fin
 const resultMessage = computed(() => {
@@ -155,7 +162,10 @@ const resetQuiz = () => {
   quizFinished.value = false;
 };
 
-const progressPercent = computed(() => ((currentIndex.value + 1) / totalQuestions.value) * 100);
+const progressPercent = computed(() => {
+    if (totalQuestions.value === 0) return 0;
+    return ((currentIndex.value + 1) / totalQuestions.value) * 100;
+});
 </script>
 
 <style>

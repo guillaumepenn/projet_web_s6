@@ -2,7 +2,7 @@
     <Navbar/>
     <main>
       <!--<router-view> </router-view>-->
-      <Home/>
+      <Lesson :LessonId="1"/>
     </main>
     <AppFooter/>
 </template>
@@ -10,14 +10,14 @@
 <script>
 import Navbar from './components/NavbarComp.vue'
 import AppFooter from './components/FooterComp.vue'
-import Home from './views/HomeView.vue'
+import Lesson from './views/LessonView.vue'
 
 export default {
   name: 'App',
   components: {
     Navbar,
     AppFooter,
-    Home
+    Lesson
   }
 }
 </script>

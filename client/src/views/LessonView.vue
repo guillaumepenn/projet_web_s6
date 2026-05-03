@@ -1,15 +1,15 @@
-<!-- eslint-disable -->
 <template>
   <div class="lesson-page" v-if="currentLesson">
-    <!-- Header de la Leçon -->
+    <!-- Header -->
     <section class="lesson-header">
       <div class="container">
-        <router-link to="/lessons" class="back-link">
+        <!-- Retour aux leçons (avec émission d'événement pour App.vue) -->
+        <a href="#" class="back-link" @click.prevent="$emit('back')">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m15 18-6-6 6-6"/>
           </svg>
           Retour aux leçons
-        </router-link>
+        </a>
         
         <div class="lesson-title-block">
           <span :class="['lesson-domain-badge', currentLesson.domain]">{{ currentLesson.domain }}</span>
@@ -23,7 +23,7 @@
       </div>
     </section>
 
-    <!-- Barre de Progression -->
+    <!-- Progression -->
     <section class="progress-section">
       <div class="container">
         <div class="progress-wrapper">
@@ -35,7 +35,7 @@
       </div>
     </section>
 
-    <!-- Contenu (Accordéon Dynamique) -->
+    <!-- Contenu -->
     <section class="lesson-content">
       <div class="container">
         <div class="accordion">
@@ -44,12 +44,11 @@
             :key="section.id" 
             :class="['accordion-item', { 'completed': isSectionDone(section.id) }]"
           >
-            <!-- En-tête de section -->
-            <button class="accordion-header" @click="toggleSection(index)" :aria-expanded="activeSection === index">
+            <button class="accordion-header" @click="toggleSection(index)">
               <span class="accordion-number">0{{ index + 1 }}</span>
               <span class="accordion-title">{{ section.title }}</span>
               <span class="accordion-status">
-                <svg v-if="isSectionDone(section.id)" class="check-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="3">
+                <svg v-if="isSectionDone(section.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="3">
                   <polyline points="20 6 9 17 4 12"/>
                 </svg>
               </span>
@@ -58,7 +57,6 @@
               </svg>
             </button>
 
-            <!-- Corps de la section -->
             <div class="accordion-content" v-show="activeSection === index">
               <div class="accordion-body">
                 <p>{{ section.text }}</p>
@@ -75,49 +73,52 @@
           </div>
         </div>
 
-        <!-- Bouton Quizz Final -->
+        <!-- CTA Quizz -->
         <div class="quiz-cta" v-if="progressPercent === 100">
-          <div class="quiz-cta-content">
-            <h3>Bravo ! Vous avez terminé cette leçon.</h3>
-            <p>Prêt à tester vos connaissances avec le quizz ?</p>
-          </div>
-          <router-link to="/quiz" class="btn btn-primary">Commencer le quizz</router-link>
+          <h3>Bravo ! Leçon terminée.</h3>
+          <button class="btn btn-primary">Commencer le quizz</button>
         </div>
       </div>
     </section>
   </div>
-  
-  <div v-else class="container">
-    <p>Chargement de la leçon ou leçon introuvable...</p>
+
+  <div v-else class="container" style="padding: 100px; text-align: center;">
+    <p>Chargement de la leçon (ID: {{ props.LessonId }})...</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
-// On importe les données et les fonctions JS de ton fichier data.js
+import { ref, computed, onMounted, defineProps } from 'vue';
 import { lessonsData, getLessonProgress, updateLessonProgress } from '../assets/data.js';
 
-const route = useRoute();
-const activeSection = ref(0); // Ouvre la première section par défaut
-const userProgress = ref({ completed: false, sectionsCompleted: [] });
-
-// 1. Logique pour trouver la leçon actuelle selon l'ID dans l'URL
-const currentLesson = computed(() => {
-  const idFromUrl = parseInt(route.params.id);
-  return lessonsData.find(lesson => lesson.id === idFromUrl);
+const props = defineProps({
+  LessonId: {
+    type: Number,
+    default: 1
+  }
 });
 
-// 2. Charger la progression stockée au montage du composant
+const activeSection = ref(0);
+const userProgress = ref({ completed: false, sectionsCompleted: [] });
+
+// 1. Trouver la leçon
+const currentLesson = computed(() => {
+  return lessonsData.find(lesson => lesson.id == props.LessonId);
+});
+
+// 2. Charger la progression
 onMounted(() => {
   if (currentLesson.value) {
-    userProgress.value = getLessonProgress(currentLesson.value.id);
+    const savedProgress = getLessonProgress(currentLesson.value.id);
+    if (savedProgress) {
+      userProgress.value = savedProgress;
+    }
   }
 });
 
 // 3. Vérifier si une section est terminée
 const isSectionDone = (sectionId) => {
-  return userProgress.value.sectionsCompleted.includes(sectionId);
+  return userProgress.value.sectionsCompleted?.includes(sectionId) || false;
 };
 
 // 4. Ouvrir/Fermer une section
@@ -127,21 +128,21 @@ const toggleSection = (index) => {
 
 // 5. Action "Marquer comme lu"
 const markRead = (sectionId) => {
-  // On appelle ta fonction JS originale et on met à jour la ref réactive de Vue
-  userProgress.value = updateLessonProgress(currentLesson.value.id, sectionId);
+  if (currentLesson.value) {
+    userProgress.value = updateLessonProgress(currentLesson.value.id, sectionId);
+  }
 };
 
-// 6. Calcul automatique du pourcentage de progression
+// 6. Calcul du pourcentage (Utilisé par ESLint et le template)
 const progressPercent = computed(() => {
   if (!currentLesson.value || !currentLesson.value.sections) return 0;
   const total = currentLesson.value.sections.length;
-  const done = userProgress.value.sectionsCompleted.length;
+  const done = userProgress.value.sectionsCompleted?.length || 0;
   return Math.round((done / total) * 100);
 });
 </script>
 
 <style scoped>
-/* Les styles spécifiques pour l'animation et le look */
 .rotated { transform: rotate(180deg); transition: transform 0.3s; }
 .accordion-item.completed { border-left: 4px solid #2ecc71; }
 .mark-complete-btn.marked { background-color: #f8f9fa; color: #95a5a6; cursor: default; }

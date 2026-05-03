@@ -110,7 +110,7 @@
                 </svg>
                 Lessons Progress
               </h2>
-              <a href="#" @click.prevent="$emit('navigate', 'lessons')" class="profile-card-link">View All</a>
+              <router-link to="/lessons" class="profile-card-link" active-class="active">View All</router-link>
             </div>
             <div class="profile-card-body">
               <div class="profile-lessons-list">
@@ -148,7 +148,7 @@
                 </svg>
                 Quiz Results
               </h2>
-              <a href="#" @click.prevent="$emit('navigate', 'quizzes')" class="profile-card-link">View All</a>
+              <router-link to="/Quizzes" class="profile-card-link" active-class="active">View All</router-link>
             </div>
             <div class="profile-card-body">
               <div class="profile-quizzes-list">

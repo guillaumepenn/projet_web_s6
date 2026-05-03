@@ -106,7 +106,7 @@
 
 <script setup>
 import { reactive, computed } from 'vue';
-import { quizzesData } from '@/assets/data.js'; // Tes données
+import { quizzesData } from '../assets/data.js'; // Tes données
 
 // État des filtres
 const filters = reactive({

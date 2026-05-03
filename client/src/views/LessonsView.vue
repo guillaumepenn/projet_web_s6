@@ -3,8 +3,8 @@
   <div>
     <section class="page-header">
       <div class="container">
-        <h1>Toutes les Leçons</h1>
-        <p>Explorez notre catalogue complet de leçons scientifiques</p>
+        <h1>All Lessons</h1>
+        <p>Explore our complete science lesson catalog</p>
       </div>
     </section>
 
@@ -12,28 +12,28 @@
       <div class="container">
         <div class="filter-bar">
           <div class="filter-group">
-            <label>Domaine :</label>
+            <label>Domain:</label>
             <select v-model="selectedDomain" class="filter-select">
-              <option value="all">Tous les domaines</option>
-              <option value="astronomie">Astronomie</option>
-              <option value="biologie">Biologie</option>
-              <option value="chimie">Chimie</option>
-              <option value="physique">Physique</option>
-              <option value="geologie">Géologie</option>
+              <option value="all">All domains</option>
+              <option value="astronomy">Astronomy</option>
+              <option value="biology">Biology</option>
+              <option value="chemistry">Chemistry</option>
+              <option value="physics">Physics</option>
+              <option value="geology">Geology</option>
             </select>
           </div>
           
           <div class="filter-group">
-            <label>Statut :</label>
+            <label>Status:</label>
             <select v-model="selectedStatus" class="filter-select">
-              <option value="all">Tous</option>
-              <option value="completed">Terminées</option>
-              <option value="not-completed">Non terminées</option>
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="not-completed">Not completed</option>
             </select>
           </div>
 
           <div class="search-group">
-            <input type="text" v-model="searchQuery" class="search-input" placeholder="Rechercher une leçon...">
+            <input type="text" v-model="searchQuery" class="search-input" placeholder="Search for a lesson...">
           </div>
         </div>
       </div>
@@ -45,10 +45,10 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th @click="toggleSort('title')" class="sortable">Titre</th>
-                <th @click="toggleSort('domain')" class="sortable">Domaine</th>
-                <th @click="toggleSort('duration')" class="sortable">Durée</th>
-                <th>Statut</th>
+                <th @click="toggleSort('title')" class="sortable">Title</th>
+                <th @click="toggleSort('domain')" class="sortable">Domain</th>
+                <th @click="toggleSort('duration')" class="sortable">Duration</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -58,12 +58,13 @@
                 <td><span :class="['domain-badge', lesson.domain]">{{ lesson.domain }}</span></td>
                 <td>{{ lesson.duration }}</td>
                 <td>
-                  <span v-if="getLessonStatus(lesson.id)" class="status-badge completed">Terminée</span>
-                  <span v-else class="status-badge not-completed">Non terminée</span>
+                  <span v-if="getLessonStatus(lesson.id)" class="status-badge completed">Completed</span>
+                  <span v-else class="status-badge not-completed">Not completed</span>
                 </td>
                 <td>
-                  <router-link :to="lesson.link" class="table-action-btn">
-                    {{ getLessonStatus(lesson.id) ? 'Revoir' : 'Commencer' }}
+                  <!-- CORRECTED HERE: Redirection to the dynamic Vue route -->
+                  <router-link :to="`/lesson/${lesson.id}`" class="table-action-btn">
+                    {{ getLessonStatus(lesson.id) ? 'Review' : 'Start' }}
                   </router-link>
                 </td>
               </tr>
@@ -77,7 +78,6 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-// On importe tes données et fonctions depuis ton fichier
 import { lessonsData, getLessonProgress } from '../assets/data.js'; 
 
 const selectedDomain = ref('all');
@@ -85,7 +85,6 @@ const selectedStatus = ref('all');
 const searchQuery = ref('');
 const currentSort = ref({ field: 'title', direction: 'asc' });
 
-// Fonction pour récupérer le statut depuis le localStorage via ton code existant
 const getLessonStatus = (id) => {
   return getLessonProgress(id).completed;
 };

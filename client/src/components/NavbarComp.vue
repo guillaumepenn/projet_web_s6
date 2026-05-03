@@ -7,25 +7,25 @@
       <nav :class="['nav', { active: isOpen }]">
         <router-link to="/" class="nav-link active">Home</router-link>
         <router-link to="/lessons" class="nav-link">Lessons</router-link>  
-        <router-link to="/quizzs" class="nav-link">Quizzs</router-link>
+        <!-- CORRECTED HERE: /quizzes -->
+        <router-link to="/quizzes" class="nav-link">Quizzes</router-link>
       </nav>
         <!-- Profile Section -->
       <div class="profile-section" id="profileSection">
-        <!-- Logged out state -->
         <div class="profile-logged-out" id="profileLoggedOut">
-          <button class="btn-auth btn-login" onclick="openAuthModal('login')">Connexion</button>
-          <button class="btn-auth btn-signup" onclick="openAuthModal('signup')">Inscription</button>
+          <button class="btn-auth btn-login" onclick="openAuthModal('login')">Login</button>
+          <button class="btn-auth btn-signup" onclick="openAuthModal('signup')">Sign Up</button>
         </div>
-        <!-- Logged in state (hidden by default) -->
         <div class="profile-logged-in" id="profileLoggedIn" style="display: none;">
           <button class="profile-avatar-btn" onclick="toggleProfileMenu()">
-            <img src="" alt="Photo de profil" class="profile-avatar" id="profileAvatar">
+            <img src="" alt="Profile picture" class="profile-avatar" id="profileAvatar">
           </button>
           <div class="profile-dropdown" id="profileDropdown">
-            <router-link to="/profil" class="profile-dropdown-item">
-              Mon profil
+            <!-- Updated to /profile -->
+            <router-link to="/profile" class="profile-dropdown-item">
+              My Profile
             </router-link>
-            <button class="profile-dropdown-item logout-btn" onclick="logout()">Déconnexion</button>
+            <button class="profile-dropdown-item logout-btn" onclick="logout()">Logout</button>
           </div>
         </div>
       </div>
@@ -70,7 +70,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   @import '../assets/styles.css';
 </style>

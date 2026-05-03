@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 import Home from '../views/HomeView.vue'
 import Lessons from '../views/LessonsView.vue'
 import Quizzes from '../views/QuizzesView.vue'
-import Profil from '../views/ProfilView.vue'
+import Profil from '../views/ProfilView.vue' // Keeping original file name to avoid import errors
 import Lesson from '../views/LessonView.vue'
 import Quiz from '../views/QuizView.vue'
 
@@ -12,13 +12,14 @@ const routes = [
   { path: '/home', component: Home },
   { path: '/lessons', component: Lessons },
   { path: '/quizzes', component: Quizzes },
-  { path: '/profil', component: Profil },
-  { path: '/lesson', component: Lesson },
-  { path: '/quiz', component: Quiz}
+  { path: '/profile', component: Profil },
+  { path: '/lesson/:id', component: Lesson },
+  { path: '/quiz/:id', component: Quiz }
+  
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 })
 

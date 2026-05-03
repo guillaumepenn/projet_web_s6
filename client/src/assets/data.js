@@ -1,184 +1,196 @@
 /**
  * Sample Data for Pluriscience
  * This file contains all the lessons and quizzes data
- * You can modify this data to add more content
  */
 
 export const lessonsData = [
     {
-        id: 1,
-        title: "Le Système Solaire",
-        domain: "astronomie",
-        duration: "15 min",
-        description: "Découvrez les planètes et objets du système solaire.",
-        link: "lesson.html"
+        id: 1, title: "The Solar System", domain: "astronomy", duration: "15 min",
+        description: "Discover the planets and objects of the solar system.",
+        sections: [
+            { id: "s1", title: "Introduction", text: "The solar system consists of our star, the Sun, and all the celestial bodies orbiting it." },
+            { id: "s2", title: "The planets", text: "There are 8 main planets, divided into terrestrial and gas giants." }
+        ]
     },
     {
-        id: 2,
-        title: "Les Étoiles et leur Cycle de Vie",
-        domain: "astronomie",
-        duration: "20 min",
-        description: "Apprenez comment naissent et meurent les étoiles.",
-        link: "lesson.html"
+        id: 2, title: "Stars and Their Life Cycle", domain: "astronomy", duration: "20 min",
+        description: "Learn how stars are born and die.",
+        sections: [
+            { id: "s1", title: "Birth", text: "Stars are born in nebulas." },
+            { id: "s2", title: "Death", text: "They can end up as a white dwarf, neutron star, or black hole." }
+        ]
     },
     {
-        id: 3,
-        title: "La Cellule : Unité du Vivant",
-        domain: "biologie",
-        duration: "18 min",
-        description: "Explorez la structure et le fonctionnement des cellules.",
-        link: "lesson.html"
+        id: 3, title: "The Cell: Unit of Life", domain: "biology", duration: "18 min",
+        description: "Explore the structure and function of cells.",
+        sections: [
+            { id: "s1", title: "Structure", text: "The cell has a membrane, a cytoplasm, and often a nucleus." }
+        ]
     },
     {
-        id: 4,
-        title: "L'ADN et la Génétique",
-        domain: "biologie",
-        duration: "25 min",
-        description: "Comprendre le code génétique et l'hérédité.",
-        link: "lesson.html"
+        id: 4, title: "DNA and Genetics", domain: "biology", duration: "25 min",
+        description: "Understand the genetic code and heredity.",
+        sections: [
+            { id: "s1", title: "DNA", text: "DNA is a double helix containing genetic information." }
+        ]
     },
     {
-        id: 5,
-        title: "Les Réactions Chimiques",
-        domain: "chimie",
-        duration: "15 min",
-        description: "Les bases des transformations de la matière.",
-        link: "lesson.html"
+        id: 5, title: "Chemical Reactions", domain: "chemistry", duration: "15 min",
+        description: "The basics of matter transformation.",
+        sections: [
+            { id: "s1", title: "Principle", text: "Nothing is lost, nothing is created, everything is transformed." }
+        ]
     },
     {
-        id: 6,
-        title: "Le Tableau Périodique",
-        domain: "chimie",
-        duration: "20 min",
-        description: "Organisation et propriétés des éléments.",
-        link: "lesson.html"
+        id: 6, title: "The Periodic Table", domain: "chemistry", duration: "20 min",
+        description: "Organization and properties of elements.",
+        sections: [
+            { id: "s1", title: "Mendeleev", text: "The table was invented by Dmitri Mendeleev." }
+        ]
     },
     {
-        id: 7,
-        title: "Les Lois de Newton",
-        domain: "physique",
-        duration: "22 min",
-        description: "Les fondements de la mécanique classique.",
-        link: "lesson.html"
+        id: 7, title: "Newton's Laws", domain: "physics", duration: "22 min",
+        description: "The foundations of classical mechanics.",
+        sections: [
+            { id: "s1", title: "Gravity", text: "Gravity explains why objects fall." }
+        ]
     },
     {
-        id: 8,
-        title: "L'Électricité et le Magnétisme",
-        domain: "physique",
-        duration: "25 min",
-        description: "Comprendre les forces électromagnétiques.",
-        link: "lesson.html"
+        id: 8, title: "Electricity and Magnetism", domain: "physics", duration: "25 min",
+        description: "Understand electromagnetic forces.",
+        sections: [
+            { id: "s1", title: "Electrons", text: "Electric current is a flow of electrons." }
+        ]
     },
     {
-        id: 9,
-        title: "Les Roches et Minéraux",
-        domain: "geologie",
-        duration: "18 min",
-        description: "Classification et formation des roches.",
-        link: "lesson.html"
+        id: 9, title: "Rocks and Minerals", domain: "geology", duration: "18 min",
+        description: "Classification and formation of rocks.",
+        sections: [
+            { id: "s1", title: "Magma", text: "Cooled magma forms igneous rocks." }
+        ]
     },
     {
-        id: 10,
-        title: "La Tectonique des Plaques",
-        domain: "geologie",
-        duration: "20 min",
-        description: "Les mouvements de la croûte terrestre.",
-        link: "lesson.html"
+        id: 10, title: "Plate Tectonics", domain: "geology", duration: "20 min",
+        description: "Movements of the Earth's crust.",
+        sections: [
+            { id: "s1", title: "Drift", text: "Continents move on the Earth's mantle." }
+        ]
     }
 ];
 
 export const quizzesData = [
     {
-        id: 1,
-        title: "Quizz : Le Système Solaire",
-        domain: "astronomie",
-        questions: 10,
-        relatedLesson: 1,
-        link: "quiz.html"
+        id: 1, title: "Quiz: The Solar System", domain: "astronomy", relatedLesson: 1,
+        questions: [
+            {
+                id: "q1", question: "What is the largest planet?",
+                answers: [ { id: "a", text: "Earth" }, { id: "b", text: "Jupiter" }, { id: "c", text: "Mars" } ],
+                correctAnswer: "b"
+            },
+            {
+                id: "q2", question: "The Sun is a star.",
+                answers: [ { id: "a", text: "True" }, { id: "b", text: "False" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 2,
-        title: "Quizz : Les Étoiles",
-        domain: "astronomie",
-        questions: 10,
-        relatedLesson: 2,
-        link: "quiz.html"
+        id: 2, title: "Quiz: Stars", domain: "astronomy", relatedLesson: 2,
+        questions: [
+            {
+                id: "q1", question: "Where are stars born?",
+                answers: [ { id: "a", text: "In nebulas" }, { id: "b", text: "In black holes" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 3,
-        title: "Quizz : La Cellule",
-        domain: "biologie",
-        questions: 10,
-        relatedLesson: 3,
-        link: "quiz.html"
+        id: 3, title: "Quiz: The Cell", domain: "biology", relatedLesson: 3,
+        questions: [
+            {
+                id: "q1", question: "Which of these structures contains DNA?",
+                answers: [ { id: "a", text: "The nucleus" }, { id: "b", text: "The membrane" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 4,
-        title: "Quizz : Génétique",
-        domain: "biologie",
-        questions: 10,
-        relatedLesson: 4,
-        link: "quiz.html"
+        id: 4, title: "Quiz: Genetics", domain: "biology", relatedLesson: 4,
+        questions: [
+            {
+                id: "q1", question: "DNA is shaped like a double...",
+                answers: [ { id: "a", text: "Helix" }, { id: "b", text: "Line" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 5,
-        title: "Quizz : Réactions Chimiques",
-        domain: "chimie",
-        questions: 10,
-        relatedLesson: 5,
-        link: "quiz.html"
+        id: 5, title: "Quiz: Chemical Reactions", domain: "chemistry", relatedLesson: 5,
+        questions: [
+            {
+                id: "q1", question: "During a reaction, mass is...",
+                answers: [ { id: "a", text: "Conserved" }, { id: "b", text: "Lost" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 6,
-        title: "Quizz : Tableau Périodique",
-        domain: "chimie",
-        questions: 10,
-        relatedLesson: 6,
-        link: "quiz.html"
+        id: 6, title: "Quiz: The Periodic Table", domain: "chemistry", relatedLesson: 6,
+        questions: [
+            {
+                id: "q1", question: "Who invented the periodic table?",
+                answers: [ { id: "a", text: "Einstein" }, { id: "b", text: "Mendeleev" } ],
+                correctAnswer: "b"
+            }
+        ]
     },
     {
-        id: 7,
-        title: "Quizz : Lois de Newton",
-        domain: "physique",
-        questions: 10,
-        relatedLesson: 7,
-        link: "quiz.html"
+        id: 7, title: "Quiz: Newton's Laws", domain: "physics", relatedLesson: 7,
+        questions: [
+            {
+                id: "q1", question: "Which apple is famous in physics?",
+                answers: [ { id: "a", text: "Newton's" }, { id: "b", text: "Archimedes'" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 8,
-        title: "Quizz : Électromagnétisme",
-        domain: "physique",
-        questions: 10,
-        relatedLesson: 8,
-        link: "quiz.html"
+        id: 8, title: "Quiz: Electromagnetism", domain: "physics", relatedLesson: 8,
+        questions: [
+            {
+                id: "q1", question: "Electric current is a flow of...",
+                answers: [ { id: "a", text: "Protons" }, { id: "b", text: "Electrons" } ],
+                correctAnswer: "b"
+            }
+        ]
     },
     {
-        id: 9,
-        title: "Quizz : Roches et Minéraux",
-        domain: "geologie",
-        questions: 10,
-        relatedLesson: 9,
-        link: "quiz.html"
+        id: 9, title: "Quiz: Rocks and Minerals", domain: "geology", relatedLesson: 9,
+        questions: [
+            {
+                id: "q1", question: "Cooled magma becomes...",
+                answers: [ { id: "a", text: "Igneous rock" }, { id: "b", text: "Sedimentary rock" } ],
+                correctAnswer: "a"
+            }
+        ]
     },
     {
-        id: 10,
-        title: "Quizz : Tectonique",
-        domain: "geologie",
-        questions: 10,
-        relatedLesson: 10,
-        link: "quiz.html"
+        id: 10, title: "Quiz: Tectonics", domain: "geology", relatedLesson: 10,
+        questions: [
+            {
+                id: "q1", question: "Continents do not move.",
+                answers: [ { id: "a", text: "True" }, { id: "b", text: "False" } ],
+                correctAnswer: "b"
+            }
+        ]
     }
 ];
 
-// Initialize progress in localStorage if not exists
 export function initializeProgress() {
     if (!localStorage.getItem('lessonsProgress')) {
         const initialLessonsProgress = {};
         lessonsData.forEach(lesson => {
-            initialLessonsProgress[lesson.id] = {
-                completed: false,
-                sectionsCompleted: []
-            };
+            initialLessonsProgress[lesson.id] = { completed: false, sectionsCompleted: [] };
         });
         localStorage.setItem('lessonsProgress', JSON.stringify(initialLessonsProgress));
     }
@@ -186,23 +198,17 @@ export function initializeProgress() {
     if (!localStorage.getItem('quizzesProgress')) {
         const initialQuizzesProgress = {};
         quizzesData.forEach(quiz => {
-            initialQuizzesProgress[quiz.id] = {
-                completed: false,
-                score: null,
-                percentage: null
-            };
+            initialQuizzesProgress[quiz.id] = { completed: false, score: null, percentage: null };
         });
         localStorage.setItem('quizzesProgress', JSON.stringify(initialQuizzesProgress));
     }
 }
 
-// Get lesson progress
 export function getLessonProgress(lessonId) {
     const progress = JSON.parse(localStorage.getItem('lessonsProgress') || '{}');
     return progress[lessonId] || { completed: false, sectionsCompleted: [] };
 }
 
-// Update lesson progress
 export function updateLessonProgress(lessonId, sectionId) {
     const progress = JSON.parse(localStorage.getItem('lessonsProgress') || '{}');
     if (!progress[lessonId]) {
@@ -213,8 +219,11 @@ export function updateLessonProgress(lessonId, sectionId) {
         progress[lessonId].sectionsCompleted.push(sectionId);
     }
     
-    // Check if all sections are completed (assuming 5 sections per lesson)
-    if (progress[lessonId].sectionsCompleted.length >= 5) {
+    // Lesson is considered complete if all sections are read
+    const targetLesson = lessonsData.find(l => l.id === lessonId);
+    const totalSections = targetLesson && targetLesson.sections ? targetLesson.sections.length : 1;
+
+    if (progress[lessonId].sectionsCompleted.length >= totalSections) {
         progress[lessonId].completed = true;
     }
     
@@ -222,13 +231,11 @@ export function updateLessonProgress(lessonId, sectionId) {
     return progress[lessonId];
 }
 
-// Get quiz progress
 export function getQuizProgress(quizId) {
     const progress = JSON.parse(localStorage.getItem('quizzesProgress') || '{}');
     return progress[quizId] || { completed: false, score: null, percentage: null };
 }
 
-// Update quiz progress
 export function updateQuizProgress(quizId, score, total) {
     const progress = JSON.parse(localStorage.getItem('quizzesProgress') || '{}');
     progress[quizId] = {
@@ -240,10 +247,8 @@ export function updateQuizProgress(quizId, score, total) {
     return progress[quizId];
 }
 
-// Initialize on load
 initializeProgress();
 
-// Export data for other scripts
 window.lessonsData = lessonsData;
 window.quizzesData = quizzesData;
 window.getLessonProgress = getLessonProgress;

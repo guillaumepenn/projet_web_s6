@@ -39,9 +39,6 @@
   </footer>
 </template>
 
-<script setup>
-// Using Script Setup for consistency with your other components
-</script>
 
 <style scoped>
 .footer {

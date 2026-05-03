@@ -1,54 +1,54 @@
 <template>
   <div class="quizzes-page">
-    <!-- Page Header -->
     <section class="page-header">
       <div class="container">
-        <h1>Tous les Quizz</h1>
-        <p>Testez vos connaissances et suivez votre progression</p>
+        <h1>All Quizzes</h1>
+        <p>Test your knowledge and track your personal progress</p>
       </div>
     </section>
 
-    <!-- Filter Section -->
     <section class="filter-section">
       <div class="container">
         <div class="filter-bar">
+          <!-- Filter by scientific field -->
           <div class="filter-group">
-            <label>Domaine :</label>
+            <label>Field:</label>
             <select v-model="filters.domain" class="filter-select">
-              <option value="all">Tous les domaines</option>
+              <option value="all">All fields</option>
               <option v-for="d in domains" :key="d" :value="d.toLowerCase()">{{ d }}</option>
             </select>
           </div>
 
+          <!-- Filter by completion status -->
           <div class="filter-group">
-            <label>Statut :</label>
+            <label>Status:</label>
             <select v-model="filters.status" class="filter-select">
-              <option value="all">Tous</option>
-              <option value="completed">Effectués</option>
-              <option value="not-completed">Non effectués</option>
+              <option value="all">All</option>
+              <option value="completed">Completed</option>
+              <option value="not-completed">Not completed</option>
             </select>
           </div>
 
+          <!-- Keyword search input -->
           <div class="search-group">
             <input 
               type="text" 
               v-model="filters.search" 
               class="search-input" 
-              placeholder="Rechercher un quizz..."
+              placeholder="Search for a quiz..."
             >
-            <!-- SVG Icon ici -->
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Quizzes Table -->
     <section class="table-section">
       <div class="container">
         <div class="table-wrapper">
           <table class="data-table">
             <thead>
               <tr>
+                <!-- Dynamic generation of table headers with sorting capability -->
                 <th v-for="col in columns" :key="col.key">
                   <button 
                     v-if="col.sortable" 
@@ -57,7 +57,7 @@
                   >
                     {{ col.label }}
                     <span class="sort-icon" :class="currentSort.direction" v-if="currentSort.field === col.key">
-                      <!-- SVG Arrow -->
+                      <!-- Sorting arrow indicator -->
                     </span>
                   </button>
                   <span v-else>{{ col.label }}</span>
@@ -65,6 +65,7 @@
               </tr>
             </thead>
             <tbody>
+              <!-- Iteration through filtered and sorted quiz list -->
               <tr v-for="quiz in filteredAndSortedQuizzes" :key="quiz.id">
                 <td><strong>{{ quiz.title }}</strong></td>
                 <td>
@@ -74,10 +75,11 @@
                 </td>
                 <td>{{ quiz.questions.length }} questions</td>
                 <td>
-                  <span v-if="getProg(quiz.id).completed" class="status-badge completed">Effectué</span>
-                  <span v-else class="status-badge not-completed">Non effectué</span>
+                  <span v-if="getProg(quiz.id).completed" class="status-badge completed">Completed</span>
+                  <span v-else class="status-badge not-completed">Not completed</span>
                 </td>
                 <td>
+                  <!-- Displays percentage score or a dash if not attempted -->
                   <span v-if="getProg(quiz.id).percentage !== null" 
                         :class="['score-badge', getScoreClass(getProg(quiz.id).percentage)]">
                     {{ getProg(quiz.id).percentage }}%
@@ -86,18 +88,19 @@
                 </td>
                 <td>
                   <router-link :to="`/quiz/${quiz.id}`" class="table-action-btn">
-                    {{ getProg(quiz.id).completed ? 'Refaire' : 'Commencer' }}
+                    {{ getProg(quiz.id).completed ? 'Retake' : 'Start' }}
                   </router-link>
                 </td>
               </tr>
+              <!-- Empty state message -->
               <tr v-if="filteredAndSortedQuizzes.length === 0">
-                <td colspan="6" class="empty-row">Aucun quizz ne correspond à vos critères.</td>
+                <td colspan="6" class="empty-row">No quizzes match your search criteria.</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="table-footer">
-          <p class="results-count"><span>{{ filteredAndSortedQuizzes.length }}</span> quizz affichés</p>
+          <p class="results-count"><span>{{ filteredAndSortedQuizzes.length }}</span> quizzes displayed</p>
         </div>
       </div>
     </section>
@@ -106,43 +109,59 @@
 
 <script setup>
 import { reactive, computed } from 'vue';
-import { quizzesData } from '../assets/data.js'; // Tes données
+import { quizzesData } from '../assets/data.js';
 
-// État des filtres
+/**
+ * Reactive state for filtering criteria
+ */
 const filters = reactive({
   domain: 'all',
   status: 'all',
   search: ''
 });
 
-// État du tri
+/**
+ * Reactive state for table sorting logic
+ */
 const currentSort = reactive({
   field: 'title',
   direction: 'asc'
 });
 
-const domains = ['Astronomie', 'Biologie', 'Chimie', 'Physique', 'Géologie'];
+const domains = ['Astronomy', 'Biology', 'Chemistry', 'Physics', 'Geology'];
+
+/**
+ * Table configuration to manage labels and sorting rules
+ */
 const columns = [
-  { label: 'Titre', key: 'title', sortable: true },
-  { label: 'Domaine', key: 'domain', sortable: true },
+  { label: 'Title', key: 'title', sortable: true },
+  { label: 'Field', key: 'domain', sortable: true },
   { label: 'Questions', key: 'questions', sortable: true },
-  { label: 'Statut', key: 'status', sortable: false },
+  { label: 'Status', key: 'status', sortable: false },
   { label: 'Score', key: 'score', sortable: true },
   { label: 'Action', key: 'action', sortable: false }
 ];
 
-// Simuler la récupération du progrès (LocalStorage ou Store)
+/**
+ * Retrieves quiz progress from persistent storage (localStorage)
+ * Can be replaced by an API call in a database-driven environment
+ */
 const getProg = (id) => {
-  // Remplacer par ta vraie logique de store/localStorage
   return JSON.parse(localStorage.getItem(`quiz_prog_${id}`)) || { completed: false, percentage: null };
 };
 
+/**
+ * Returns a CSS class based on the numerical score
+ */
 const getScoreClass = (score) => {
   if (score >= 70) return 'high';
   if (score >= 40) return 'medium';
   return 'low';
 };
 
+/**
+ * Handles the logic of switching sorting fields and directions
+ */
 const toggleSort = (field) => {
   if (currentSort.field === field) {
     currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
@@ -152,11 +171,13 @@ const toggleSort = (field) => {
   }
 };
 
-// LOGIQUE DE FILTRAGE ET TRI (Le cerveau du composant)
+/**
+ * Core logic: Filters the data array then sorts it based on user selection
+ */
 const filteredAndSortedQuizzes = computed(() => {
   let result = [...quizzesData];
 
-  // 1. Filtrage
+  // Apply filters (Domain, Status, Search string)
   result = result.filter(quiz => {
     const prog = getProg(quiz.id);
     const matchDomain = filters.domain === 'all' || quiz.domain.toLowerCase() === filters.domain;
@@ -168,12 +189,13 @@ const filteredAndSortedQuizzes = computed(() => {
     return matchDomain && matchStatus && matchSearch;
   });
 
-  // 2. Tri
+  // Apply sorting
   result.sort((a, b) => {
     let aVal, bVal;
     const progA = getProg(a.id);
     const progB = getProg(b.id);
 
+    // Specific sorting rules for calculated fields
     switch (currentSort.field) {
       case 'questions': aVal = a.questions.length; bVal = b.questions.length; break;
       case 'score': aVal = progA.percentage || -1; bVal = progB.percentage || -1; break;
@@ -189,6 +211,7 @@ const filteredAndSortedQuizzes = computed(() => {
   return result;
 });
 </script>
-<style>
-    @import '../assets/styles.css';
+
+<style scoped>
+@import '../assets/styles.css';
 </style>

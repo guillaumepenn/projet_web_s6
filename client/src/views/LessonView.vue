@@ -1,14 +1,15 @@
 <template>
+  <!-- Main container shown only if currentLesson data exists -->
   <div class="lesson-page" v-if="currentLesson">
-    <!-- Header -->
+    <!-- Header Section -->
     <section class="lesson-header">
       <div class="container">
-        <!-- Retour aux leçons (avec émission d'événement pour App.vue) -->
+        <!-- Back link emitting an event to return to the catalog -->
         <a href="#" class="back-link" @click.prevent="$emit('back')">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m15 18-6-6 6-6"/>
           </svg>
-          Retour aux leçons
+          Back to Lessons
         </a>
         
         <div class="lesson-title-block">
@@ -23,22 +24,23 @@
       </div>
     </section>
 
-    <!-- Progression -->
+    <!-- Progress Tracking Section -->
     <section class="progress-section">
       <div class="container">
         <div class="progress-wrapper">
           <div class="progress-bar">
             <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
           </div>
-          <span class="progress-text">{{ progressPercent }}% complété</span>
+          <span class="progress-text">{{ progressPercent }}% completed</span>
         </div>
       </div>
     </section>
 
-    <!-- Contenu -->
+    <!-- Lesson Content (Accordion style) -->
     <section class="lesson-content">
       <div class="container">
         <div class="accordion">
+          <!-- Iterate through each section of the lesson -->
           <div 
             v-for="(section, index) in currentLesson.sections" 
             :key="section.id" 
@@ -57,6 +59,7 @@
               </svg>
             </button>
 
+            <!-- Collapsible content body -->
             <div class="accordion-content" v-show="activeSection === index">
               <div class="accordion-body">
                 <p>{{ section.text }}</p>
@@ -66,24 +69,25 @@
                   :class="{ 'marked': isSectionDone(section.id) }"
                   :disabled="isSectionDone(section.id)"
                 >
-                  {{ isSectionDone(section.id) ? 'Déjà lu' : 'Marquer comme lu' }}
+                  {{ isSectionDone(section.id) ? 'Already read' : 'Mark as read' }}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- CTA Quizz -->
+        <!-- Call to Action visible only when the lesson is fully completed -->
         <div class="quiz-cta" v-if="progressPercent === 100">
-          <h3>Bravo ! Leçon terminée.</h3>
-          <button class="btn btn-primary">Commencer le quizz</button>
+          <h3>Well done! Lesson completed.</h3>
+          <button class="btn btn-primary">Start Quiz</button>
         </div>
       </div>
     </section>
   </div>
 
+  <!-- Fallback loading state -->
   <div v-else class="container" style="padding: 100px; text-align: center;">
-    <p>Chargement de la leçon (ID: {{ props.LessonId }})...</p>
+    <p>Loading lesson (ID: {{ props.LessonId }})...</p>
   </div>
 </template>
 
@@ -98,15 +102,22 @@ const props = defineProps({
   }
 });
 
+/**
+ * Local State
+ */
 const activeSection = ref(0);
 const userProgress = ref({ completed: false, sectionsCompleted: [] });
 
-// 1. Trouver la leçon
+/**
+ * Finds the specific lesson in the dataset using the ID prop
+ */
 const currentLesson = computed(() => {
   return lessonsData.find(lesson => lesson.id == props.LessonId);
 });
 
-// 2. Charger la progression
+/**
+ * Loads the user's progress from storage when the component mounts
+ */
 onMounted(() => {
   if (currentLesson.value) {
     const savedProgress = getLessonProgress(currentLesson.value.id);
@@ -116,24 +127,32 @@ onMounted(() => {
   }
 });
 
-// 3. Vérifier si une section est terminée
+/**
+ * Checks if a specific section ID exists in the user's completed list
+ */
 const isSectionDone = (sectionId) => {
   return userProgress.value.sectionsCompleted?.includes(sectionId) || false;
 };
 
-// 4. Ouvrir/Fermer une section
+/**
+ * Toggles the visibility of the accordion sections
+ */
 const toggleSection = (index) => {
   activeSection.value = activeSection.value === index ? null : index;
 };
 
-// 5. Action "Marquer comme lu"
+/**
+ * Triggers the progress update and refreshes the local state
+ */
 const markRead = (sectionId) => {
   if (currentLesson.value) {
     userProgress.value = updateLessonProgress(currentLesson.value.id, sectionId);
   }
 };
 
-// 6. Calcul du pourcentage (Utilisé par ESLint et le template)
+/**
+ * Calculates the percentage of completion based on sections read
+ */
 const progressPercent = computed(() => {
   if (!currentLesson.value || !currentLesson.value.sections) return 0;
   const total = currentLesson.value.sections.length;

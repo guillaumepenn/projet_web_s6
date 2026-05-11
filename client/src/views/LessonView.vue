@@ -1,17 +1,13 @@
 <template>
-  <!-- Main container shown only if currentLesson data exists -->
   <div class="lesson-page" v-if="currentLesson">
-    <!-- Header Section -->
     <section class="lesson-header">
       <div class="container">
-        <!-- Back link emitting an event to return to the catalog -->
-        <a href="#" class="back-link" @click.prevent="$emit('back')">
+        <router-link to="/lessons" class="back-link">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="m15 18-6-6 6-6"/>
           </svg>
           Back to Lessons
-        </a>
-        
+        </router-link>
         <div class="lesson-title-block">
           <span :class="['lesson-domain-badge', currentLesson.domain]">{{ currentLesson.domain }}</span>
           <h1>{{ currentLesson.title }}</h1>
@@ -24,7 +20,6 @@
       </div>
     </section>
 
-    <!-- Progress Tracking Section -->
     <section class="progress-section">
       <div class="container">
         <div class="progress-wrapper">
@@ -36,17 +31,19 @@
       </div>
     </section>
 
-    <!-- Lesson Content (Accordion style) -->
     <section class="lesson-content">
       <div class="container">
         <div class="accordion">
-          <!-- Iterate through each section of the lesson -->
-          <div 
-            v-for="(section, index) in currentLesson.sections" 
-            :key="section.id" 
+          <div
+            v-for="(section, index) in currentLesson.sections"
+            :key="section.id"
             :class="['accordion-item', { 'completed': isSectionDone(section.id) }]"
           >
-            <button class="accordion-header" @click="toggleSection(index)">
+            <button
+              class="accordion-header"
+              :aria-expanded="activeSection === index ? 'true' : 'false'"
+              @click="toggleSection(index)"
+            >
               <span class="accordion-number">0{{ index + 1 }}</span>
               <span class="accordion-title">{{ section.title }}</span>
               <span class="accordion-status">
@@ -59,12 +56,11 @@
               </svg>
             </button>
 
-            <!-- Collapsible content body -->
-            <div class="accordion-content" v-show="activeSection === index">
+            <div :class="['accordion-content', { 'open': activeSection === index }]">
               <div class="accordion-body">
                 <p>{{ section.text }}</p>
-                <button 
-                  @click="markRead(section.id)" 
+                <button
+                  @click="markRead(section.id)"
                   class="mark-complete-btn"
                   :class="{ 'marked': isSectionDone(section.id) }"
                   :disabled="isSectionDone(section.id)"
@@ -76,7 +72,6 @@
           </div>
         </div>
 
-        <!-- Call to Action visible only when the lesson is fully completed -->
         <div class="quiz-cta" v-if="progressPercent === 100">
           <h3>Well done! Lesson completed.</h3>
           <button class="btn btn-primary">Start Quiz</button>
@@ -85,76 +80,46 @@
     </section>
   </div>
 
-  <!-- Fallback loading state -->
   <div v-else class="container" style="padding: 100px; text-align: center;">
-    <p>Loading lesson (ID: {{ props.LessonId }})...</p>
+    <p>Loading lesson...</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineProps } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { lessonsData, getLessonProgress, updateLessonProgress } from '../assets/data.js';
 
-const props = defineProps({
-  LessonId: {
-    type: Number,
-    default: 1
-  }
-});
-
-/**
- * Local State
- */
-const activeSection = ref(0);
+const route = useRoute();
+const activeSection = ref(null);
 const userProgress = ref({ completed: false, sectionsCompleted: [] });
 
-/**
- * Finds the specific lesson in the dataset using the ID prop
- */
 const currentLesson = computed(() => {
-  return lessonsData.find(lesson => lesson.id == props.LessonId);
+  return lessonsData.find(lesson => lesson.id == route.params.id);
 });
 
-/**
- * Loads the user's progress from storage when the component mounts
- */
 onMounted(() => {
   if (currentLesson.value) {
-    const savedProgress = getLessonProgress(currentLesson.value.id);
-    if (savedProgress) {
-      userProgress.value = savedProgress;
-    }
+    userProgress.value = getLessonProgress(currentLesson.value.id);
   }
 });
 
-/**
- * Checks if a specific section ID exists in the user's completed list
- */
 const isSectionDone = (sectionId) => {
   return userProgress.value.sectionsCompleted?.includes(sectionId) || false;
 };
 
-/**
- * Toggles the visibility of the accordion sections
- */
 const toggleSection = (index) => {
   activeSection.value = activeSection.value === index ? null : index;
 };
 
-/**
- * Triggers the progress update and refreshes the local state
- */
 const markRead = (sectionId) => {
   if (currentLesson.value) {
     userProgress.value = updateLessonProgress(currentLesson.value.id, sectionId);
   }
 };
 
-/**
- * Calculates the percentage of completion based on sections read
- */
 const progressPercent = computed(() => {
-  if (!currentLesson.value || !currentLesson.value.sections) return 0;
+  if (!currentLesson.value?.sections) return 0;
   const total = currentLesson.value.sections.length;
   const done = userProgress.value.sectionsCompleted?.length || 0;
   return Math.round((done / total) * 100);
@@ -165,4 +130,14 @@ const progressPercent = computed(() => {
 .rotated { transform: rotate(180deg); transition: transform 0.3s; }
 .accordion-item.completed { border-left: 4px solid #2ecc71; }
 .mark-complete-btn.marked { background-color: #f8f9fa; color: #95a5a6; cursor: default; }
+
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.accordion-content.open {
+  max-height: 600px;
+}
 </style>

@@ -9,6 +9,7 @@
         <router-link to="/" class="nav-link" active-class="active">Home</router-link>
         <router-link to="/lessons" class="nav-link" active-class="active">Lessons</router-link>  
         <router-link to="/quizzes" class="nav-link" active-class="active">Quizzes</router-link>
+        <router-link v-if="isAdmin" to="/admin/quizzes" class="nav-link nav-link-admin" active-class="active">⚙ Admin</router-link>
       </nav>
 
       <div class="profile-section">
@@ -52,6 +53,14 @@ const isOpen = ref(false);
 const showProfileDropdown = ref(false); 
 const isLoggedIn = ref(false); 
 const userData = ref(null);
+
+/**
+ * Admin detection: user is considered admin if username is 'admin' or role === 'admin'
+ * Replace with a real role check once backend is implemented
+ */
+const isAdmin = computed(() => {
+  return userData.value?.name?.toLowerCase() === 'admin' || userData.value?.role === 'admin';
+});
 
 /**
  * Generates the user avatar URL using UI Avatars if no custom image exists
@@ -126,5 +135,13 @@ onUnmounted(() => {
 <style scoped>
 .profile-dropdown {
   display: block; 
+}
+
+.nav-link-admin {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 0.25rem 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 </style>

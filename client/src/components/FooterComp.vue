@@ -25,9 +25,9 @@
         <div class="footer-section">
           <h4>Developed by</h4>
           <ul class="team-list">
-            <li>[Your Name]</li>
+            <li>Mathieu NIVEAU</li>
             <!-- Add other teammates here -->
-            <li>[Teammate Name]</li>
+            <li>Guillaume PENN</li>
           </ul>
         </div>
       </div>

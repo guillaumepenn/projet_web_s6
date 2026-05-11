@@ -1,36 +1,30 @@
 <template>
-  <!-- Modal Overlay: background that covers the screen -->
   <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
     <div class="modal-container">
       <button class="close-btn" @click="closeModal">&times;</button>
-      
+
       <div class="modal-content">
         <h2>{{ isLogin ? 'Welcome Back' : 'Join Pluriscience' }}</h2>
         <p class="modal-subtitle">
           {{ isLogin ? 'Enter your credentials to access your lessons.' : 'Create an account to start your journey.' }}
         </p>
 
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
         <form @submit.prevent="handleSubmit" class="auth-form">
           <div class="form-group">
             <label for="username">Username</label>
-            <input 
-              type="text" 
-              id="username" 
-              v-model="formData.username" 
-              placeholder="Enter your ID" 
-              required
-            >
+            <input type="text" id="username" v-model="formData.username" placeholder="Enter your username" required>
+          </div>
+
+          <div v-if="!isLogin" class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" v-model="formData.email" placeholder="Enter your email" required>
           </div>
 
           <div class="form-group">
             <label for="password">Password</label>
-            <input 
-              type="password" 
-              id="password" 
-              v-model="formData.password" 
-              placeholder="••••••••" 
-              required
-            >
+            <input type="password" id="password" v-model="formData.password" placeholder="••••••••" required>
           </div>
 
           <button type="submit" class="btn-submit" :disabled="isLoading">
@@ -39,7 +33,7 @@
         </form>
 
         <div class="modal-footer">
-          <button @click="isLogin = !isLogin" class="toggle-auth">
+          <button @click="switchMode" class="toggle-auth">
             {{ isLogin ? "Don't have an account? Sign Up" : "Already have an account? Login" }}
           </button>
         </div>
@@ -50,65 +44,55 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { authApi } from '../composables/useApi.js';
 
 const isVisible = ref(false);
 const isLogin = ref(true);
 const isLoading = ref(false);
+const errorMessage = ref('');
 
-const formData = ref({
-  username: '',
-  password: ''
-});
+const formData = ref({ username: '', email: '', password: '' });
 
-/**
- * Closes the modal and resets the form
- */
 const closeModal = () => {
   isVisible.value = false;
-  formData.value = { username: '', password: '' };
+  errorMessage.value = '';
+  formData.value = { username: '', email: '', password: '' };
 };
 
-/**
- * Handles the form submission
- * In a real app, this is where you call your backend API
- */
+const switchMode = () => {
+  isLogin.value = !isLogin.value;
+  errorMessage.value = '';
+};
+
 const handleSubmit = async () => {
   isLoading.value = true;
-  
-  // Simulation of a server delay (1.5s)
-  setTimeout(() => {
-    // 1. Prepare dummy user data (In reality, this comes from your Database)
-    const mockUser = {
-      name: formData.value.username,
-      avatar: null,
-      token: "fake-jwt-token-from-server"
-    };
+  errorMessage.value = '';
 
-    // 2. Save to localStorage so Navbar can see it
-    localStorage.setItem('user', JSON.stringify(mockUser));
+  try {
+    let data;
+    if (isLogin.value) {
+      data = await authApi.login(formData.value.username, formData.value.password);
+    } else {
+      data = await authApi.register(formData.value.username, formData.value.email, formData.value.password);
+    }
 
-    // 3. Dispatch the event we talked about!
+    localStorage.setItem('user', JSON.stringify(data.user));
     window.dispatchEvent(new Event('auth-change'));
-
-    isLoading.value = false;
     closeModal();
-    alert(`Success! Welcome ${mockUser.name}`);
-  }, 1500);
+  } catch (err) {
+    errorMessage.value = err.message;
+  } finally {
+    isLoading.value = false;
+  }
 };
 
-/**
- * Listen for the 'open-auth' event sent by the Navbar
- */
-onMounted(() => {
-  window.addEventListener('open-auth', (event) => {
-    isLogin.value = event.detail === 'login';
-    isVisible.value = true;
-  });
-});
+const openHandler = (event) => {
+  isLogin.value = event.detail === 'login';
+  isVisible.value = true;
+};
 
-onUnmounted(() => {
-  window.removeEventListener('open-auth');
-});
+onMounted(() => window.addEventListener('open-auth', openHandler));
+onUnmounted(() => window.removeEventListener('open-auth', openHandler));
 </script>
 
 <style scoped>
@@ -161,7 +145,18 @@ input {
   transition: background 0.3s;
 }
 
-.btn-submit:hover { background: #16435e; }
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-submit:hover:not(:disabled) { background: #16435e; }
+
+.error-message {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
 
 .toggle-auth {
   background: none; border: none;
